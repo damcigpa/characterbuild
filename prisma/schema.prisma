@@ -20,3 +20,8 @@ model User {
   name    String?
   pass    String   @unique
 }
+
+model Character {
+  name String
+  race String
+}
