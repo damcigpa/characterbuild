@@ -10,3 +10,7 @@ export const fetchData = async (url: string) => {
     throw error
   }
 }
+
+export const isChecked = (arr: [], value: string): boolean => {
+  return arr?.some((item: { id: string }) => item.id === value)
+}
