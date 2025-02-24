@@ -1,9 +1,10 @@
 // pages/stats.js
 'use client'
-import React, { useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
 import { fetchData } from '@/app/Utils/utils'
 import Cards from '@/Components/Cards'
-import { Weapon, WeaponId } from '@/Interfaces/Interfaces'
+import { Weapon } from '@/Interfaces/Interfaces'
 import { isChecked } from '@/app/Utils/utils'
 
 interface FormProps {
@@ -12,15 +13,19 @@ interface FormProps {
 }
 
 const Form = ({ formType, inputType }: FormProps) => {
-  const [data, setData] = useState<Weapon[]>([])
   const [pagerData, setPagerData] = useState<number[]>([])
+  const [page, setPage] = useState('1')
+
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['weapons', page],
+    queryFn: () => fetchData(
+      `https://eldenring.fanapis.com/api/${formType}?limit=50&page=${page}`
+    ),
+  })
 
   const buttonHandler = async (event: React.MouseEvent) => {
     let id = event.currentTarget.id
-    const data = await fetchData(
-      `https://eldenring.fanapis.com/api/${formType}?limit=50&page=${id}`
-    )
-    setData(data.data)
+    setPage(id)
   }
 
   const handleInput = (event: React.MouseEvent) => {
@@ -33,38 +38,38 @@ const Form = ({ formType, inputType }: FormProps) => {
       const arr = obj[formType] || []
 
       const newArr = isChecked(arr, id)
-        ? arr.filter((item: {id: string}) => item.id !== id)
+        ? arr.filter((item: { id: string }) => item.id !== id)
         : [...arr, { id, url }]
       obj[formType] = newArr
     } else {
-      obj[formType] = [{
-        id,
-        url,
-      }];
+      obj[formType] = [
+        {
+          id,
+          url,
+        },
+      ]
     }
 
     localStorage.setItem('character', JSON.stringify(obj))
   }
 
-  const setWeaponsData = async () => {
-    const data = await fetchData(
-      `https://eldenring.fanapis.com/api/${formType}?limit=50`
-    )
-    let num = Math.ceil(data.total / data.count)
-    setData(data.data)
-    const pagers = Array.from({ length: num }, (_, i) => i + 1)
-    setPagerData(pagers)
-  }
-
   useEffect(() => {
-    setWeaponsData()
-  }, [])
+    if (pagerData.length === 0) {
+      let num = Math.round(data?.total / data?.count)
+      console.log(num)
+      const pagers = Array.from({ length: num }, (_, i) => i + 1)
+      setPagerData(pagers)
+    }
+  }, [data])
+
+  if (isLoading) return <div>Fetching posts...</div>
+  if (error) return <div>An error occurred: {error.message}</div>
 
   return (
     <>
       <h1>{formType.toUpperCase()}</h1>
       <div className="flex flex-wrap">
-        {data.map((d) => {
+        {data?.data.map((d: Weapon) => {
           return (
             <Cards
               formType={formType}
