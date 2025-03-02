@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 export default function characterFinalization() {
   const [file, setFile] = useState<File | null>(null)
 
@@ -23,7 +23,7 @@ export default function characterFinalization() {
       body: JSON.stringify(obj),
     })
       .then((response) => response.json())
-      .then((data) => console.log(data))
+      .then(() => localStorage.removeItem('character'))
       .catch((error) => console.error('Error:', error))
   }
 

@@ -7,17 +7,21 @@ export async function POST(req: Request) {
   try {
     const formData = await req.json()
     const name = formData.name as string
+    const dexterity = formData.dexterity as number
+    const vigor = formData.vigor as number
+    const image = formData.image as string
     const armors = formData.armors || []
     const weapons = formData.weapons || []
     const talismans = formData.talismans || []
     const sorceries = formData.sorceries || []
     const incantations = formData.incantations || []
 
-    console.log('form', formData)
-
     const characterBuild = await prisma.characterBuild.create({
       data: {
         name,
+        dexterity,
+        vigor,
+        image,
         armors: {
           create: armors.map((armor: { name: string; url: string }) => ({
             name: armor.name,
@@ -52,8 +56,6 @@ export async function POST(req: Request) {
         },
       },
     })
-
-    console.log('Created character build:', characterBuild)
 
     return NextResponse.json({ characterBuild }, { status: 201 })
   } catch (error) {
