@@ -31,20 +31,20 @@ const Form = ({ formType, inputType }: FormProps) => {
   const handleInput = (event: React.MouseEvent) => {
     const storage = localStorage.getItem('character')
     const obj = JSON.parse(storage || '{}')
-    const id = (event.currentTarget as HTMLElement).dataset.id || ''
+    const name= (event.currentTarget as HTMLElement).dataset.id || ''
     const url = (event.currentTarget as HTMLElement).dataset.url
 
     if (inputType === 'checkbox') {
       const arr = obj[formType] || []
 
-      const newArr = isChecked(arr, id)
-        ? arr.filter((item: { id: string }) => item.id !== id)
-        : [...arr, { id, url }]
+      const newArr = isChecked(arr, name)
+        ? arr.filter((item: { name: string }) => item.name !== name)
+        : [...arr, { name, url }]
       obj[formType] = newArr
     } else {
       obj[formType] = [
         {
-          id,
+          name,
           url,
         },
       ]
@@ -56,7 +56,6 @@ const Form = ({ formType, inputType }: FormProps) => {
   useEffect(() => {
     if (pagerData.length === 0) {
       let num = Math.round(data?.total / data?.count)
-      console.log(num)
       const pagers = Array.from({ length: num }, (_, i) => i + 1)
       setPagerData(pagers)
     }

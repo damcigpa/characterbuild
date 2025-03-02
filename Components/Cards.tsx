@@ -31,7 +31,7 @@ const Cards: React.FC<Weapon> = ({
       {isLoading && (
         <div
           style={{
-            width: '600px', 
+            width: '200px', 
             height: '400px', 
             backgroundColor: '#ccc', 
             filter: 'blur(8px)', 

@@ -4,7 +4,6 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -15,13 +14,58 @@ datasource db {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
-  pass    String   @unique
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+  pass  String  @unique
 }
 
-model Character {
-  name String
-  race String
+model CharacterBuild {
+  name         String
+  id           Int           @id @default(autoincrement())
+  armors       Armor[]
+  weapons      Weapon[]
+  talismans    Talisman[]
+  sorceries    Sorcery[]
+  incantations Incantation[]
+}
+
+model Armor {
+  id               Int             @id @default(autoincrement())
+  name             String
+  url              String
+  CharacterBuild   CharacterBuild? @relation(fields: [characterBuildId], references: [id])
+  characterBuildId Int?
+}
+
+model Weapon {
+  id               Int             @id @default(autoincrement())
+  name             String
+  url              String
+  CharacterBuild   CharacterBuild? @relation(fields: [characterBuildId], references: [id])
+  characterBuildId Int?
+}
+
+model Talisman {
+  id               Int             @id @default(autoincrement())
+  name             String
+  url              String
+  CharacterBuild   CharacterBuild? @relation(fields: [characterBuildId], references: [id])
+  characterBuildId Int?
+}
+
+model Sorcery {
+  id               Int             @id @default(autoincrement())
+  name             String
+  url              String
+  CharacterBuild   CharacterBuild? @relation(fields: [characterBuildId], references: [id])
+  characterBuildId Int?
+}
+
+model Incantation {
+  id               Int             @id @default(autoincrement())
+  name             String
+  url              String
+  CharacterBuild   CharacterBuild? @relation(fields: [characterBuildId], references: [id])
+  characterBuildId Int?
 }
