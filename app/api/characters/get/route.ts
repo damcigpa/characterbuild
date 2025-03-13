@@ -1,17 +1,11 @@
-import { NextResponse, NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function GET(req: NextRequest) {
-  const searchParams = req.nextUrl.searchParams
-  const id = searchParams.get('id')
-
+export async function GET() {
   try {
-    const resp = await prisma.characterBuild.findUnique({
-      where: {
-        id: Number(id),
-      },
+    const resp = await prisma.characterBuild.findMany({
       include: {
         armors: true,
         weapons: true,

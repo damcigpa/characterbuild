@@ -15,7 +15,7 @@ export default function characterFinalization() {
     const char = localStorage.getItem('character')
     const obj = char ? JSON.parse(char) : {}
 
-    fetch('http://localhost:5474/api/character/post', {
+    fetch('http://localhost:5474/api/characters/post', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

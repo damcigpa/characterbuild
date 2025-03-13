@@ -25,7 +25,8 @@ model CharacterBuild {
   id           Int           @id @default(autoincrement())
   dexterity    Int           @default(autoincrement())
   vigor        Int           @default(autoincrement())
-  image        String?       
+  image        String?
+  likes        Int           @default(0)       
   armors       Armor[]
   weapons      Weapon[]
   talismans    Talisman[]
