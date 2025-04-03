@@ -5,9 +5,10 @@ import { CharacterInterface } from '@/Interfaces/Interfaces'
 interface CharacterProps {
   character: CharacterInterface
   id: number
+  userId: string
 }
 
-const Character: React.FC<CharacterProps> = ({ character, id }) => {
+const Character: React.FC<CharacterProps> = ({ character, id, userId }) => {
   const [likes, setLikes] = useState(character.likes)
 
   interface LikeEvent extends React.MouseEvent<HTMLButtonElement> {
@@ -20,7 +21,7 @@ const Character: React.FC<CharacterProps> = ({ character, id }) => {
     const response: Response = await fetch('/api/likes/post', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: id }),
+      body: JSON.stringify({ characterBuildId: id, userId: userId }),
     })
 
     const character = await response.json()

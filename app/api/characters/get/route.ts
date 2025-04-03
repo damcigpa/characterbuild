@@ -1,21 +1,36 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const searchParams = req.nextUrl.searchParams
+  const userId = searchParams.get('userId') // User ID to check if the user liked the builds
+
   try {
-    const resp = await prisma.characterBuild.findMany({
+    const characterBuilds = await prisma.characterBuild.findMany({
       include: {
         armors: true,
         weapons: true,
         talismans: true,
         sorceries: true,
         incantations: true,
+        likedBy: true, 
       },
     })
 
-    return NextResponse.json({ character: resp })
+    const result = characterBuilds.map((characterBuild) => {
+      const userLiked = characterBuild.likedBy.some(
+        (like) => like.userId === Number(userId)
+      )
+
+      return {
+        ...characterBuild,
+        userLiked, 
+      }
+    })
+
+    return NextResponse.json({ characters: result })
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to fetch character builds' },

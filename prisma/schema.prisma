@@ -18,6 +18,7 @@ model User {
   email String  @unique
   name  String?
   pass  String  @unique
+  likes CharacterBuildLike[]
 }
 
 model CharacterBuild {
@@ -26,13 +27,24 @@ model CharacterBuild {
   dexterity    Int           @default(autoincrement())
   vigor        Int           @default(autoincrement())
   image        String?
-  likes        Int           @default(0)       
+  likes        Int           @default(0)
+  likedBy      CharacterBuildLike[]       
   armors       Armor[]
   weapons      Weapon[]
   talismans    Talisman[]
   sorceries    Sorcery[]
   incantations Incantation[]
 }
+
+model CharacterBuildLike {
+  userId          Int
+  characterBuildId Int
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  characterBuild  CharacterBuild  @relation(fields: [characterBuildId], references: [id], onDelete: Cascade)
+
+  @@id([userId, characterBuildId]) // Composite primary key to prevent duplicate likes
+}
+
 
 model Armor {
   id               Int             @id @default(autoincrement())

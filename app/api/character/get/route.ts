@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
         talismans: true,
         sorceries: true,
         incantations: true,
+    
       },
     })
 
