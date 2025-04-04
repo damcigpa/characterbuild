@@ -27,7 +27,7 @@ const Cards: React.FC<Weapon> = ({
   }
 
   return (
-    <div id={id} className="basis-1/3 cursor-pointer">
+    <div id={id.toString()} className="basis-1/3 cursor-pointer">
       {isLoading && (
         <div
           style={{

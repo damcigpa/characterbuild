@@ -1,7 +1,10 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+
+import React, { useState } from 'react'
 import Link from 'next/link'
+import { useMutation } from '@tanstack/react-query'
 import { CharacterInterface } from '@/Interfaces/Interfaces'
+
 interface CharacterProps {
   character: CharacterInterface
   id: number
@@ -11,26 +14,34 @@ interface CharacterProps {
 const Character: React.FC<CharacterProps> = ({ character, id, userId }) => {
   const [likes, setLikes] = useState(character.likes)
 
-  interface LikeEvent extends React.MouseEvent<HTMLButtonElement> {
-    target: HTMLButtonElement & { dataset: { id: string } }
-  }
+  const likeMutation = useMutation({
+    mutationFn: async (characterBuildId: string) => {
+      const response = await fetch('/api/likes/post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ characterBuildId, userId }),
+      })
+      if (!response.ok) throw new Error('Failed to like')
+      return response.json()
+    },
+    onSuccess: (data) => {
+      setLikes(data.likes)
+    },
+    onError: (error) => {
+      console.error(error)
+    },
+  })
 
-  const handleLike = async (event: LikeEvent): Promise<void> => {
-    const id: string = event.target.dataset.id
-
-    const response: Response = await fetch('/api/likes/post', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ characterBuildId: id, userId: userId }),
-    })
-
-    const character = await response.json()
-    setLikes(character.likes)
+  const handleLike = (event: React.MouseEvent): void => {
+    const target = event.target as HTMLElement
+    const id: string | undefined = target.dataset.id
+    if (!id) return
+    likeMutation.mutate(id)
   }
 
   return (
     <div>
-      <Link href={`/character/[id]`} as={`/character/${id}`}>
+      <Link href={`/character/${id}`}>
         <h1>{character.name}</h1>
         <img
           src={`/upload/${character.image}`}
@@ -40,8 +51,12 @@ const Character: React.FC<CharacterProps> = ({ character, id, userId }) => {
         <p>Name: {character.name}</p>
         <p>Dexterity {character.dexterity}</p>
       </Link>
-      <button data-id={character.id} onClick={handleLike}>
-        {character.id} {likes}
+      <button
+        data-id={character.id}
+        onClick={handleLike}
+        disabled={likeMutation.isPending}
+      >
+        {character.id} {likeMutation.isPending ? 'Liking...' : likes}
       </button>
     </div>
   )

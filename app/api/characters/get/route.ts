@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams
-  const userId = searchParams.get('userId') // User ID to check if the user liked the builds
+  const userId = searchParams.get('userId') 
 
   try {
     const characterBuilds = await prisma.characterBuild.findMany({

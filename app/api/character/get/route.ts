@@ -6,6 +6,7 @@ const prisma = new PrismaClient()
 export async function GET(req: NextRequest) {
   const searchParams = req.nextUrl.searchParams
   const id = searchParams.get('id')
+  const uId = searchParams.get('userId')
 
   try {
     const resp = await prisma.characterBuild.findUnique({
@@ -18,11 +19,13 @@ export async function GET(req: NextRequest) {
         talismans: true,
         sorceries: true,
         incantations: true,
-    
+        likedBy: true,
       },
     })
 
-    return NextResponse.json({ character: resp })
+    const userLiked = resp?.likedBy[0]?.userId === Number(uId) ? true : false
+
+    return NextResponse.json({ character: {...resp, userLiked} })
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to fetch character builds' },

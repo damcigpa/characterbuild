@@ -1,8 +1,14 @@
 import { fetchData } from '@/app/Utils/utils'
+import { useLoginSession } from '@/app/Hooks/useLoginSession'
 
 const CharacterPage = async ({ params }: { params: { slug: string } }) => {
   const { slug } = await params
-  const data = await fetchData(`http://localhost:5474/api/character/get?id=${slug}`)
+  const session = await useLoginSession()
+  const data = await fetchData(
+    `http://localhost:5474/api/character/get?id=${slug}&userId=${session.user.id}`
+  )
+
+  console.log('Character data:', data)
 
   return (
     <div>
