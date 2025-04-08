@@ -1,5 +1,5 @@
 import { fetchData } from '../Utils/utils'
-import CharacterList from '@/Components/CharactrList'
+import CharacterList from '@/Components/CharacterList'
 import { useLoginSession } from '../Hooks/useLoginSession'
 
 export default async function CharacterListPage() {

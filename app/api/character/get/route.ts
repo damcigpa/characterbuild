@@ -20,12 +20,26 @@ export async function GET(req: NextRequest) {
         sorceries: true,
         incantations: true,
         likedBy: true,
+        comments: {
+          include: {
+            commenter: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
       },
+    })
+
+    const characterComments = resp?.comments.filter((comment) => {
+      return comment.id === Number(id)
     })
 
     const userLiked = resp?.likedBy[0]?.userId === Number(uId) ? true : false
 
-    return NextResponse.json({ character: {...resp, userLiked} })
+    return NextResponse.json({...resp, userLiked, characterComments}, { status: 200 })
   } catch (error) {
     return NextResponse.json(
       { error: 'Failed to fetch character builds' },

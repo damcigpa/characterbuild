@@ -19,6 +19,7 @@ model User {
   name  String?
   pass  String  @unique
   likes CharacterBuildLike[]
+  comments Comment[]
 }
 
 model CharacterBuild {
@@ -34,6 +35,16 @@ model CharacterBuild {
   talismans    Talisman[]
   sorceries    Sorcery[]
   incantations Incantation[]
+  comments     Comment[]
+}
+
+model Comment {
+  id               Int             @id @default(autoincrement())
+  commenterId      Int
+  commenter        User            @relation(fields: [commenterId], references: [id], onDelete: Cascade)
+  comment          String
+  characterBuild   CharacterBuild @relation(fields: [characterBuildId], references: [id])
+  characterBuildId Int
 }
 
 model CharacterBuildLike {
@@ -42,7 +53,7 @@ model CharacterBuildLike {
   user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
   characterBuild  CharacterBuild  @relation(fields: [characterBuildId], references: [id], onDelete: Cascade)
 
-  @@id([userId, characterBuildId]) // Composite primary key to prevent duplicate likes
+  @@id([userId, characterBuildId]) 
 }
 
 

@@ -22,5 +22,19 @@ export interface CharacterInterface {
   talismans: Item[]
   sorceries: Item[]
   incantations: Item[]
+  comments: Comment[]
+}
+
+export interface Comment {
+  id: number
+  userId: number
+  comment: string
+  characterId: number
+  commenter: Commenter
+}
+
+interface Commenter {
+  id: number
+  name: string
 }
 
