@@ -19,10 +19,10 @@ const Cards: React.FC<Weapon> = ({
 
   const setCheckedState = (elem: HTMLInputElement) => {
     if (elem) {
-        const character = localStorage.getItem('character')
-        if (!character) return
-        const obj = JSON.parse(character || '{}')
-        elem.checked=isChecked(obj[formType], name)
+      const character = localStorage.getItem('character')
+      if (!character) return
+      const obj = JSON.parse(character || '{}')
+      elem.checked = isChecked(obj[formType], name)
     }
   }
 
@@ -31,14 +31,13 @@ const Cards: React.FC<Weapon> = ({
       {isLoading && (
         <div
           style={{
-            width: '200px', 
-            height: '400px', 
-            backgroundColor: '#ccc', 
-            filter: 'blur(8px)', 
-            position: 'relative', 
+            width: '200px',
+            height: '400px',
+            backgroundColor: '#ccc',
+            filter: 'blur(8px)',
+            position: 'relative',
           }}
-        >
-        </div>
+        ></div>
       )}
       <img
         src={image}
@@ -54,6 +53,7 @@ const Cards: React.FC<Weapon> = ({
         <input
           ref={setCheckedState}
           type={inputType}
+          data-testid={id.toString()}
           checked={inputRef.current?.checked}
           name="choose"
         />

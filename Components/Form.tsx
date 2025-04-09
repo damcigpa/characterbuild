@@ -17,7 +17,7 @@ const Form = ({ formType, inputType }: FormProps) => {
   const [page, setPage] = useState('1')
 
   const { data, error, isLoading } = useQuery({
-    queryKey: ['weapons', page],
+    queryKey: [`${formType}`, page],
     queryFn: () => fetchData(
       `https://eldenring.fanapis.com/api/${formType}?limit=50&page=${page}`
     ),

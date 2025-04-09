@@ -30,7 +30,7 @@ export default function SignupForm() {
     }
 
     setSuccess('User registered successfully! Redirecting...')
-    setTimeout(() => router.push('/character_list'), 2000)
+    setTimeout(() => router.push('/character_list'), 500)
   }
 
   return (
@@ -38,8 +38,9 @@ export default function SignupForm() {
       <h2>Sign Up</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Name:</label>
+          <label htmlFor="name">Name:</label>
           <input
+            id="name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -47,8 +48,9 @@ export default function SignupForm() {
           />
         </div>
         <div>
-          <label>Email:</label>
+          <label htmlFor="email">Email:</label>
           <input
+            id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -56,8 +58,9 @@ export default function SignupForm() {
           />
         </div>
         <div>
-          <label>Password:</label>
+          <label htmlFor="password">Password:</label>
           <input
+            id="password"
             type="password"
             value={pass}
             onChange={(e) => setPassword(e.target.value)}
