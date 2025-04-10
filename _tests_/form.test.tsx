@@ -3,7 +3,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import Form from '@/Components/Form'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-// Mock fetchData and isChecked
 jest.mock('../app/Utils/utils', () => ({
   fetchData: jest.fn(() =>
     Promise.resolve({

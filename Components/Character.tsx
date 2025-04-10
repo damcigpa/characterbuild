@@ -13,6 +13,8 @@ interface CharacterProps {
 
 const Character: React.FC<CharacterProps> = ({ character, id, userId }) => {
   const [likes, setLikes] = useState(character.likes)
+  const [userLiked, setUserLiked] = useState(character.userLiked)
+  const buttonText = userLiked ? 'Unlike' : 'Like'
 
   const likeMutation = useMutation({
     mutationFn: async (characterBuildId: string) => {
@@ -26,6 +28,7 @@ const Character: React.FC<CharacterProps> = ({ character, id, userId }) => {
     },
     onSuccess: (data) => {
       setLikes(data.likes)
+      setUserLiked(!userLiked)
     },
     onError: (error) => {
       console.error(error)
@@ -51,12 +54,14 @@ const Character: React.FC<CharacterProps> = ({ character, id, userId }) => {
         <p>Name: {character.name}</p>
         <p>Dexterity {character.dexterity}</p>
       </Link>
+      <span data-testid="likes">{likes}</span>
       <button
         data-id={character.id}
+        data-testid={userLiked ? 'Unlike' : 'Like'}
         onClick={handleLike}
         disabled={likeMutation.isPending}
       >
-        {character.id} {likeMutation.isPending ? 'Liking...' : likes}
+        {likeMutation.isPending ? 'Liking...' : buttonText}
       </button>
     </div>
   )

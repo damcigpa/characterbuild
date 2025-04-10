@@ -23,6 +23,7 @@ export interface CharacterInterface {
   sorceries: Item[]
   incantations: Item[]
   comments: Comment[]
+  userLiked: boolean
 }
 
 export interface Comment {
@@ -37,4 +38,7 @@ interface Commenter {
   id: number
   name: string
 }
-
+export type CharacterTestInterface = Pick<
+  CharacterInterface,
+  'id' | 'name' | 'image' | 'likes' | 'dexterity'
+>

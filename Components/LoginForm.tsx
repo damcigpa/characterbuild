@@ -5,12 +5,12 @@ import { useState } from 'react'
 export default function LoginForm() {
   const [email, setEmail] = useState('')
   const [pass, setPassword] = useState('')
-  const [error, setError] = useState('')
+  const [error, setError] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
+    setError(false)
     setLoading(true)
 
     const result = await signIn('credentials', {
@@ -21,7 +21,7 @@ export default function LoginForm() {
     })
 
     if (result?.error) {
-      setError(result.error)
+      setError(true)
     }
   }
 
@@ -30,8 +30,10 @@ export default function LoginForm() {
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Email:</label>
+          <label htmlFor="email">Email:</label>
           <input
+            data-testid="email"
+            id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -39,15 +41,17 @@ export default function LoginForm() {
           />
         </div>
         <div>
-          <label>Password:</label>
+          <label htmlFor="password">Password:</label>
           <input
+            data-testid="password"
+            id="password"
             type="password"
             value={pass}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p style={{ color: 'red' }}>Incorrect password or email</p>}
         {loading ? <div>Loading...</div> : <button type="submit">Login</button>}
       </form>
     </div>
