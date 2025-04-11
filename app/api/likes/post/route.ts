@@ -41,7 +41,7 @@ export async function POST(req: PostRequest): Promise<Response> {
       })
     }
 
-    let updatedCharacter = await prisma.characterBuild.update({
+    const updatedCharacter = await prisma.characterBuild.update({
       where: { id: buildId },
       data: { likes: { increment: num } },
       include: {

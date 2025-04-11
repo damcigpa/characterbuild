@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
     })
 
     return NextResponse.json({ characters: result })
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch character builds' },
       { status: 500 }

@@ -1,16 +1,37 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import { defineConfig } from 'eslint/config'
+import js from '@eslint/js'
+import globals from 'globals'
+import tseslint from 'typescript-eslint'
+import pluginReact from 'eslint-plugin-react'
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+export default defineConfig([
+  {
+    files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+        ...globals.es2021,
+      },
+    },
+    plugins: {
+      js,
+    },
+    rules: {
+      ...js.configs.recommended.rules,
+    },
+  },
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
+  // TypeScript ESLint recommended config
+  ...tseslint.configs.recommended,
 
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-];
+  // React flat config (only for JSX/TSX files)
+  {
+    files: ['**/*.{jsx,tsx}'],
+    ...pluginReact.configs.flat.recommended,
+  },
 
-export default eslintConfig;
+  // Ignore folders like node_modules, dist, etc.
+  {
+    ignores: ['node_modules/**', 'dist/**', 'build/**', '.next/**'],
+  },
+])

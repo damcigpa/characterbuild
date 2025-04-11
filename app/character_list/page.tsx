@@ -1,3 +1,4 @@
+import React from 'react'
 import { fetchData } from '../Utils/utils'
 import CharacterList from '@/Components/CharacterList'
 import { useLoginSession } from '../Hooks/useLoginSession'

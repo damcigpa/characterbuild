@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
     const userLiked = resp?.likedBy[0]?.userId === Number(uId) ? true : false
 
     return NextResponse.json({...resp, userLiked, characterComments}, { status: 200 })
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch character builds' },
       { status: 500 }

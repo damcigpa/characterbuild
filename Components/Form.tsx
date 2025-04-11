@@ -24,7 +24,7 @@ const Form = ({ formType, inputType }: FormProps) => {
   })
 
   const buttonHandler = async (event: React.MouseEvent) => {
-    let id = event.currentTarget.id
+    const id = event.currentTarget.id
     setPage(id)
   }
 
@@ -55,7 +55,7 @@ const Form = ({ formType, inputType }: FormProps) => {
 
   useEffect(() => {
     if (pagerData.length === 0) {
-      let num = Math.round(data?.total / data?.count)
+      const num = Math.round(data?.total / data?.count)
       const pagers = Array.from({ length: num }, (_, i) => i + 1)
       setPagerData(pagers)
     }

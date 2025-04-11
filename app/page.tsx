@@ -1,6 +1,4 @@
-import { fetchData } from './Utils/utils'
-import Character from '@/Components/Character'
-import { CharacterInterface } from '@/Interfaces/Interfaces'
+import React from 'react'
 import LoginForm from '@/Components/LoginForm'
 import SignupForm from '@/Components/SignupForm'
 

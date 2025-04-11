@@ -9,7 +9,7 @@ const mockCharacter = {
 beforeEach(() => {
   localStorage.setItem('character', JSON.stringify(mockCharacter))
 
-  global.fetch = jest.fn((url, options) => {
+  global.fetch = jest.fn((url) => {
     if (typeof url === 'string' && url.includes('/api/images/post')) {
       return Promise.resolve({
         ok: true,
@@ -35,7 +35,7 @@ afterEach(() => {
 
 describe('CharacterFinalization component', () => {
   test('uploads a file and updates localStorage with image name', async () => {
-    const { getByText, getByLabelText } = render(<CharacterFinalization />)
+    const { getByText } = render(<CharacterFinalization />)
 
     const file = new File(['hello'], 'avatar.png', { type: 'image/png' })
     const input = document.querySelector(

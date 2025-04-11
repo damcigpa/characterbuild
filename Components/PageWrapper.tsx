@@ -1,8 +1,7 @@
+import React, { ReactNode } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const queryClient = new QueryClient()
-
-import { ReactNode } from 'react';
 
 function PageWrapper({ children }: { children: ReactNode }) {
   return (

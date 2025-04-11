@@ -90,7 +90,7 @@ describe('Character Component', () => {
     expect(likeButton).toBeInTheDocument()
     fireEvent.click(likeButton)
     await waitFor(() => {
-      expect(screen.getByTestId('Unlike')).toBeInTheDocument
+      expect(screen.getByTestId('Unlike')).toBeInTheDocument()
       expect(likesSpan).toHaveTextContent('11')
     })
   })
@@ -106,7 +106,7 @@ describe('Character Component', () => {
     expect(likeButton).toBeInTheDocument()
     fireEvent.click(likeButton)
     await waitFor(() => {
-      expect(screen.getByTestId('Like')).toBeInTheDocument
+      expect(screen.getByTestId('Like')).toBeInTheDocument()
       expect(likesSpan).toHaveTextContent('9')
     })
   })
