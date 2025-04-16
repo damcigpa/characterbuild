@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     })
 
     return NextResponse.json(
-      { message: 'User registered successfully', user },
+      { message: 'User registered successfully', user: {'name': user.name } },
       { status: 201 }
     )
   } catch {

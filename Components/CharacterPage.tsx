@@ -19,17 +19,17 @@ const CharacterPage: React.FC<CharacterPageProps> = ({
 }) => {
   const queryClient = new QueryClient()
 
-  console.log(character)
-
   return (
     <div>
       <QueryClientProvider client={queryClient}>
         <Character id={Number(id)} character={character} userId={userId} />
-        <CommentBlock
-          commenterId={id}
-          characterBuildId={userId}
-          comments={character.comments}
-        />
+        {character.comments?.length > 0 && (
+          <CommentBlock
+            commenterId={id}
+            characterBuildId={userId}
+            comments={character.comments}
+          />
+        )}
       </QueryClientProvider>
     </div>
   )

@@ -7,7 +7,7 @@ export async function POST(req: Request) {
   try {
     const form = await req.formData()
     const file = form.get('file') as File
-    const fileExt = extname(file.name) // Get the file extension
+    const fileExt = extname(file.name)
     const newFileName = `${crypto.randomUUID()}${fileExt}`
 
     const arrayBuffer = await file.arrayBuffer()

@@ -24,6 +24,7 @@ export interface CharacterInterface {
   incantations: Item[]
   comments: Comment[]
   userLiked: boolean
+  creatorId: number
 }
 
 export interface Comment {

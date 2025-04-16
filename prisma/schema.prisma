@@ -14,28 +14,31 @@ datasource db {
 }
 
 model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
-  pass  String 
-  likes CharacterBuildLike[]
-  comments Comment[]
+  id              Int                  @id @default(autoincrement())
+  email           String               @unique
+  name            String?
+  pass            String
+  likes           CharacterBuildLike[]
+  comments        Comment[]
+  characterBuilds CharacterBuild[]   
 }
 
 model CharacterBuild {
-  name         String
   id           Int           @id @default(autoincrement())
+  name         String
   dexterity    Int           @default(autoincrement())
   vigor        Int           @default(autoincrement())
   image        String?
   likes        Int           @default(0)
-  likedBy      CharacterBuildLike[]       
+  likedBy      CharacterBuildLike[]
   armors       Armor[]
   weapons      Weapon[]
   talismans    Talisman[]
   sorceries    Sorcery[]
   incantations Incantation[]
   comments     Comment[]
+  creatorId    Int?                         
+  creator      User?        @relation(fields: [creatorId], references: [id], onDelete: Cascade)
 }
 
 model Comment {

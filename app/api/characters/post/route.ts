@@ -15,6 +15,7 @@ export async function POST(req: Request) {
     const talismans = formData.talismans || []
     const sorceries = formData.sorceries || []
     const incantations = formData.incantations || []
+    const userId = formData.userId as string
 
     const characterBuild = await prisma.characterBuild.create({
       data: {
@@ -22,6 +23,7 @@ export async function POST(req: Request) {
         dexterity,
         vigor,
         image,
+        creatorId: Number(userId),
         armors: {
           create: armors.map((armor: { name: string; url: string }) => ({
             name: armor.name,
