@@ -1,5 +1,5 @@
 import { render, fireEvent, waitFor } from '@testing-library/react'
-import CharacterFinalization from '@/app/character_finalization/page'
+import CharacterFinalization from '@/app/(main)/character_finalization/page'
 import React from 'react'
 
 const mockCharacter = {

@@ -1,7 +1,7 @@
 import React from 'react'
-import { fetchData } from '../Utils/utils'
+import { fetchData } from '../../Utils/utils'
 import CharacterList from '@/Components/CharacterList'
-import { useLoginSession } from '../Hooks/useLoginSession'
+import { useLoginSession } from '../../Hooks/useLoginSession'
 
 export default async function CharacterListPage() {
   const session = await useLoginSession()

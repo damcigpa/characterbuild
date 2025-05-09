@@ -2,11 +2,10 @@ import React from 'react'
 import LoginForm from '@/Components/LoginForm'
 import SignupForm from '@/Components/SignupForm'
 
-export default async function Home() {
+export default async function Login() {
 
   return (
     <>
-      <h1>Characters</h1>
       <SignupForm />
       Or
       <LoginForm />
