@@ -14,6 +14,7 @@ export async function GET(req: Request) {
     }
 
     const prisma = new PrismaClient();
+    console.log('Connecting to database...', prisma)
     const characterBuilds = await prisma.characterBuild.findMany({
       where: {
         creatorId: parseInt(userId),
@@ -37,7 +38,7 @@ export async function GET(req: Request) {
       },
     })
 
-    // Return the list of character builds
+    console.log('Fetched character builds:', characterBuilds)
     return NextResponse.json({ characterBuilds })
   } catch (error) {
     console.error('Error fetching character builds:', error)
