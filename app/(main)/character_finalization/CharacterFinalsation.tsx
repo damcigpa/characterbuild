@@ -1,19 +1,30 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
 export default function CharacterFinalization() {
   const [file, setFile] = useState<File | null>(null)
+  const [preview, setPreview] = useState<string | null>(null)
   const { data: session } = useSession()
   const router = useRouter()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0])
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0]
+      setFile(selectedFile)
+      setPreview(URL.createObjectURL(selectedFile))
     }
   }
+
+  useEffect(() => {
+    return () => {
+      if (preview) {
+        URL.revokeObjectURL(preview)
+      }
+    }
+  }, [preview])
 
   const submitHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
@@ -59,7 +70,14 @@ export default function CharacterFinalization() {
     <div>
       <h1>Upload a File</h1>
       <form onSubmit={handleSubmit}>
-        <input type="file" onChange={handleFileChange} />
+        <input type="file" onChange={handleFileChange} accept="image/*" />
+        {preview && (
+          <img
+            src={preview}
+            alt="Preview"
+            style={{ maxWidth: '300px', marginTop: '10px' }}
+          />
+        )}
         <button type="submit">Upload</button>
       </form>
       <button onClick={submitHandler}>Submit</button>

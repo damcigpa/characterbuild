@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import CharacterFinalization from '@/Components/CharacterFinalsation'
+import CharacterFinalization from '@/app/(main)/character_finalization/CharacterFinalsation'
 import { SessionProvider } from 'next-auth/react'
 
 
