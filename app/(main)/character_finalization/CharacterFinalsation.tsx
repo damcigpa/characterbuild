@@ -19,6 +19,34 @@ export default function CharacterFinalization() {
     }
   }
 
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const char = localStorage.getItem('character')
+      const obj = char ? JSON.parse(char) : {}
+
+      if (session?.user.id) {
+        obj.userId = session.user.id
+      }
+
+      const response = await fetch('/api/characters/post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(obj),
+      })
+
+      if (!response.ok) throw new Error('Failed to submit character')
+
+      return response.json()
+    },
+    onSuccess: () => {
+      localStorage.removeItem('character')
+      router.push('/character_list')
+    },
+    onError: (error) => {
+      console.error('Error:', error)
+    },
+  })
+
   const uploadImage = async (file: File): Promise<string> => {
     const formData = new FormData()
     formData.append('file', file)
@@ -62,25 +90,10 @@ export default function CharacterFinalization() {
     }
   }, [preview])
 
+
   const submitHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
-    const char = localStorage.getItem('character')
-    const obj = char ? JSON.parse(char) : {}
-    obj.userId = session?.user.id
-
-    fetch('http://localhost:5474/api/characters/post', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(obj),
-    })
-      .then((response) => response.json())
-      .then(() => {
-        localStorage.removeItem('character')
-        router.push('/character_list')
-      })
-      .catch((error) => console.error('Error:', error))
+    mutation.mutate()
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
