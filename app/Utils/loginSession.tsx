@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth'
 import { authOptions } from '../api/lib/auth'
 
-export async function useLoginSession() {
+export async function loginSession() {
   try {
     const session = await getServerSession(authOptions)
     return session

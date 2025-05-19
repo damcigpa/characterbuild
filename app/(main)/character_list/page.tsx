@@ -1,10 +1,10 @@
 import React from 'react'
 import { fetchData } from '../../Utils/utils'
 import CharacterList from '@/Components/CharacterList'
-import { useLoginSession } from '../../Hooks/useLoginSession'
+import { loginSession } from '@/app/Utils/loginSession'
 
 export default async function CharacterListPage() {
-  const session = await useLoginSession()
+  const session = await loginSession()
 
   if (!session) {
     return <h1>Go log in</h1>

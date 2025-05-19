@@ -1,11 +1,11 @@
 import React from 'react'
 import { fetchData } from '@/app/Utils/utils'
-import { useLoginSession } from '@/app/Hooks/useLoginSession'
+import { loginSession } from '@/app/Utils/loginSession';
 import CharacterPage from '@/Components/CharacterPage';
 
 const CharacterProfile = async ({ params }: { params: { slug: string } }) => {
   const { slug } = await params
-  const session = await useLoginSession()
+  const session = await loginSession()
 
   if (!session) {
     return
