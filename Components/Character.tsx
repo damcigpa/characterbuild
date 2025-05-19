@@ -12,6 +12,7 @@ interface CharacterProps {
 }
 
 const Character: React.FC<CharacterProps> = ({ character, id, userId }) => {
+  const imageUrl = `https://${process.env.NEXT_PUBLIC_S3_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${character.image}`
   const [likes, setLikes] = useState(character.likes)
   const [userLiked, setUserLiked] = useState(character.userLiked)
   const buttonText = userLiked ? 'Unlike' : 'Like'
@@ -47,7 +48,7 @@ const Character: React.FC<CharacterProps> = ({ character, id, userId }) => {
       <Link href={`/character/${id}`}>
         <h1>{character.name}</h1>
         <img
-          src={`/upload/${character.image}`}
+          src={imageUrl}
           alt={character.name}
           width={300}
         />

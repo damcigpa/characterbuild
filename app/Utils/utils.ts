@@ -14,3 +14,22 @@ export const fetchData = async (url: string) => {
 export const isChecked = (arr: [], value: string): boolean => {
   return arr?.some((item: { id: string }) => item.id === value)
 }
+
+
+export const postData= async (file: File): Promise<string> => {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  const res = await fetch('/api/images/post', {
+    method: 'POST',
+    body: formData,
+  })
+
+  const data = await res.json()
+
+  if (!res.ok) {
+    throw new Error(data.error || 'Upload failed')
+  }
+
+  return data.fileName
+}

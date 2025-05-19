@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import { useMutation } from '@tanstack/react-query'
 
 export default function CharacterFinalization() {
   const [file, setFile] = useState<File | null>(null)
@@ -17,6 +18,41 @@ export default function CharacterFinalization() {
       setPreview(URL.createObjectURL(selectedFile))
     }
   }
+
+  const uploadImage = async (file: File): Promise<string> => {
+    const formData = new FormData()
+    formData.append('file', file)
+
+    const res = await fetch('/api/images/post', {
+      method: 'POST',
+      body: formData,
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+      throw new Error(data.error || 'Upload failed')
+    }
+
+    return data.fileName
+  }
+
+  const {
+    mutate: upload,
+    status,
+    isError,
+    isSuccess,
+    error,
+  } = useMutation({
+    mutationFn: uploadImage,
+    onSuccess: (fileName) => {
+      const char = localStorage.getItem('character')
+      const obj = char ? JSON.parse(char) : {}
+      obj.image = fileName
+      localStorage.setItem('character', JSON.stringify(obj))
+      console.log('Image uploaded:', fileName)
+    },
+  })
 
   useEffect(() => {
     return () => {
@@ -47,23 +83,10 @@ export default function CharacterFinalization() {
       .catch((error) => console.error('Error:', error))
   }
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const char = localStorage.getItem('character')
-    const obj = char ? JSON.parse(char) : {}
-
     if (!file) return
-
-    const formData = new FormData()
-    formData.append('file', file)
-
-    const res = await fetch('/api/images/post', {
-      method: 'POST',
-      body: formData,
-    })
-    const data = await res.json()
-    obj.image = data.fileName
-    localStorage.setItem('character', JSON.stringify(obj))
+    upload(file)
   }
 
   return (
@@ -79,6 +102,9 @@ export default function CharacterFinalization() {
           />
         )}
         <button type="submit">Upload</button>
+        {status === 'pending' && <p>Uploading...</p>}
+        {isError && <p>Error: {error.message}</p>}
+        {isSuccess && <p>Image uploaded successfully!</p>}
       </form>
       <button onClick={submitHandler}>Submit</button>
     </div>
