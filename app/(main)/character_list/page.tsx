@@ -7,7 +7,7 @@ export default async function CharacterListPage() {
   const session = await loginSession()
 
   if (!session) {
-    return <h1>Go log in</h1>
+    return <h1>Go log in!</h1>
   }
 
   const data = await fetchData(
