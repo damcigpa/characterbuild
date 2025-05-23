@@ -14,7 +14,7 @@ export type Item = Pick<Weapon, 'name' | 'image' | 'id'>
 export interface CharacterInterface {
   id: number
   name: string
-  image: string
+  image?: string
   likes: number
   dexterity: number
   weapons: Item[]
@@ -25,6 +25,7 @@ export interface CharacterInterface {
   comments: Comment[]
   userLiked: boolean
   creatorId: number
+  userId: string
 }
 
 export interface Comment {

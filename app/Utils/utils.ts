@@ -1,3 +1,5 @@
+import { CharacterInterface } from "@/Interfaces/Interfaces"
+
 export const fetchData = async (url: string) => {
   try {
     const response = await fetch(url)
@@ -32,4 +34,9 @@ export const postData= async (file: File): Promise<string> => {
   }
 
   return data.fileName
+}
+
+export const extractObjectFromLocalStorage = (): CharacterInterface | null => {
+  const item = localStorage.getItem('character')
+  return item ? JSON.parse(item) : null
 }

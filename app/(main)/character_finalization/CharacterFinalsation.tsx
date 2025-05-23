@@ -4,14 +4,23 @@ import React, { useState, useEffect, useRef } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
+import { useUploadImage } from '@/app/Hooks/useUploadImage'
+import { useDeleteImage } from '@/app/Hooks/useDeleteImage'
+import { extractObjectFromLocalStorage } from '@/app/Utils/utils'
 
 export default function CharacterFinalization() {
+  const { upload, status, isError, isSuccess, error, fileName, setFileName } =
+    useUploadImage()
   const [file, setFile] = useState<File | null>(null)
-  const [fileName, setFileName] = useState<string | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const { data: session } = useSession()
   const inputRef = useRef<HTMLInputElement | null>(null)
   const router = useRouter()
+  const { deleteMutate } = useDeleteImage(() => {
+    setFileName(null)
+    setFile(null)
+    setPreview(null)
+  })
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -23,8 +32,8 @@ export default function CharacterFinalization() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      const char = localStorage.getItem('character')
-      const obj = char ? JSON.parse(char) : {}
+      const obj = extractObjectFromLocalStorage()
+      if (!obj) return
 
       if (session?.user.id) {
         obj.userId = session.user.id
@@ -49,68 +58,6 @@ export default function CharacterFinalization() {
     },
   })
 
-  const uploadImage = async (file: File): Promise<string> => {
-    const formData = new FormData()
-    formData.append('file', file)
-
-    const res = await fetch('/api/images/post', {
-      method: 'POST',
-      body: formData,
-    })
-
-    const data = await res.json()
-
-    if (!res.ok) {
-      throw new Error(data.error || 'Upload failed')
-    }
-
-    setFileName(data.fileName)
-
-    return data.fileName
-  }
-
-  const deleteImage = async (fileName: string) => {
-    const encodedFileName = encodeURIComponent(fileName)
-    const res = await fetch(`/api/images/${encodedFileName}`, {
-      method: 'DELETE',
-    })
-
-    if (!res.ok) {
-      const data = await res.json()
-      throw new Error(data.error || 'Delete failed')
-    }
-
-    return res.json()
-  }
-
-  const {mutate: removeImage } = useMutation({
-    mutationFn: deleteImage,
-    onSuccess: () => {
-      console.log('Image deleted successfully')
-      inputRef.current!.value = ''
-    },
-    onError: (error) => {
-      console.error('Error deleting image:', error)
-    },
-  })
-
-  const {
-    mutate: upload,
-    status,
-    isError,
-    isSuccess,
-    error,
-  } = useMutation({
-    mutationFn: uploadImage,
-    onSuccess: (fileName) => {
-      const char = localStorage.getItem('character')
-      const obj = char ? JSON.parse(char) : {}
-      obj.image = fileName
-      localStorage.setItem('character', JSON.stringify(obj))
-      console.log('Image uploaded:', fileName)
-    },
-  })
-
   useEffect(() => {
     return () => {
       if (preview) {
@@ -119,7 +66,6 @@ export default function CharacterFinalization() {
     }
   }, [preview])
 
-
   const submitHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
     mutation.mutate()
@@ -127,12 +73,7 @@ export default function CharacterFinalization() {
 
   const removeImageHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
-    if (fileName) {
-      removeImage(fileName)
-      setFileName(null)
-      setFile(null)
-      setPreview(null)
-    }
+    deleteMutate(fileName!)
   }
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -145,7 +86,12 @@ export default function CharacterFinalization() {
     <div>
       <h1>Upload a File</h1>
       <form onSubmit={handleSubmit}>
-        <input type="file" onChange={handleFileChange} ref={inputRef} accept="image/*" />
+        <input
+          type="file"
+          onChange={handleFileChange}
+          ref={inputRef}
+          accept="image/*"
+        />
         {preview && (
           <img
             src={preview}
@@ -154,10 +100,14 @@ export default function CharacterFinalization() {
           />
         )}
         <button type="submit">Upload</button>
-        <button type="button" onClick={removeImageHandler}>Remove</button>
+        {fileName && (
+          <button type="button" onClick={removeImageHandler}>
+            Remove
+          </button>
+        )}
         {status === 'pending' && <p>Uploading...</p>}
-        {isError && <p>Error: {error.message}</p>}
-        {isSuccess && <p>Image uploaded successfully!</p>}
+        {isError && <p>Error: {error?.message}</p>}
+        {isSuccess && fileName && <p>Image uploaded successfully!</p>}
       </form>
       <button onClick={submitHandler}>Submit</button>
     </div>
