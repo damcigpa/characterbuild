@@ -7,6 +7,7 @@ import { useMutation } from '@tanstack/react-query'
 
 export default function CharacterFinalization() {
   const [file, setFile] = useState<File | null>(null)
+  const [fileName, setFileName] = useState<string | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const { data: session } = useSession()
   const router = useRouter()
@@ -62,8 +63,34 @@ export default function CharacterFinalization() {
       throw new Error(data.error || 'Upload failed')
     }
 
+    setFileName(data.fileName)
+
     return data.fileName
   }
+
+  const deleteImage = async (fileName: string) => {
+    const encodedFileName = encodeURIComponent(fileName)
+    const res = await fetch(`/api/images/${encodedFileName}`, {
+      method: 'DELETE',
+    })
+
+    if (!res.ok) {
+      const data = await res.json()
+      throw new Error(data.error || 'Delete failed')
+    }
+
+    return res.json()
+  }
+
+  const {mutate: removeImage } = useMutation({
+    mutationFn: deleteImage,
+    onSuccess: () => {
+      console.log('Image deleted successfully')
+    },
+    onError: (error) => {
+      console.error('Error deleting image:', error)
+    },
+  })
 
   const {
     mutate: upload,
@@ -96,6 +123,16 @@ export default function CharacterFinalization() {
     mutation.mutate()
   }
 
+  const removeImageHandler = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+    if (fileName) {
+      removeImage(fileName)
+      setFileName(null)
+      setFile(null)
+      setPreview(null)
+    }
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!file) return
@@ -115,6 +152,7 @@ export default function CharacterFinalization() {
           />
         )}
         <button type="submit">Upload</button>
+        <button type="button" onClick={removeImageHandler}>Remove</button>
         {status === 'pending' && <p>Uploading...</p>}
         {isError && <p>Error: {error.message}</p>}
         {isSuccess && <p>Image uploaded successfully!</p>}
