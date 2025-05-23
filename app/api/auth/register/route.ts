@@ -1,12 +1,29 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import { NextResponse } from 'next/server'
+import { z } from 'zod'
 
 const prisma = new PrismaClient()
 
+const userSchema = z.object({
+  email: z.string().email(),
+  pass: z.string().min(6),
+  name: z.string().min(1).max(100),
+})
+
 export async function POST(req: Request) {
   try {
-    const { email, pass, name } = await req.json()
+    const body = await req.json()
+    const result = userSchema.safeParse(body)
+
+    if (!result.success) {
+      return NextResponse.json(
+        { error: 'Invalid input', details: result.error.flatten() },
+        { status: 400 }
+      )
+    }
+
+    const { email, pass, name } = result.data
 
     if (!email || !pass) {
       return NextResponse.json(
@@ -31,7 +48,7 @@ export async function POST(req: Request) {
     })
 
     return NextResponse.json(
-      { message: 'User registered successfully', user: {'name': user.name } },
+      { message: 'User registered successfully', user: { name: user.name } },
       { status: 201 }
     )
   } catch {

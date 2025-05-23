@@ -2,6 +2,7 @@ import NextAuth, { NextAuthOptions } from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
+import { z } from 'zod'
 
 const prisma = new PrismaClient()
 
@@ -16,26 +17,35 @@ declare module 'next-auth' {
   }
 }
 
+const loginSchema = z.object({
+  email: z.string().email(),
+  pass: z.string().min(6),
+})
+
 const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email', placeholder: 'your@email.com' },
-        pass: { label: 'Password', type: 'password' }, 
+        pass: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.pass) {
-          throw new Error('Missing email or password')
+        const result = loginSchema.safeParse(credentials)
+        if (!result.success) {
+          throw new Error('Invalid login credentials')
         }
 
+        const { email, pass } = result.data
+        const normalizedEmail = email.trim().toLowerCase()
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email: normalizedEmail },
         })
 
         if (!user) throw new Error('No user found')
 
-        const passwordMatch = await bcrypt.compare(credentials.pass, user.pass)
+        const passwordMatch = await bcrypt.compare(pass, user.pass)
         if (!passwordMatch) throw new Error('Incorrect password')
 
         return { id: user.id.toString(), email: user.email, name: user.name }
