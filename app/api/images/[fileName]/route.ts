@@ -11,10 +11,8 @@ const s3 = new S3Client({
   },
 })
 
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { fileName: string } }
-) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ fileName: string }> }) {
+  const params = await props.params;
   const session = await getServerSession(authOptions)
 
   if (!session || !session.user) {

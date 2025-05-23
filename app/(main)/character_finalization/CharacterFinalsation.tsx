@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
@@ -10,6 +10,7 @@ export default function CharacterFinalization() {
   const [fileName, setFileName] = useState<string | null>(null)
   const [preview, setPreview] = useState<string | null>(null)
   const { data: session } = useSession()
+  const inputRef = useRef<HTMLInputElement | null>(null)
   const router = useRouter()
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,6 +87,7 @@ export default function CharacterFinalization() {
     mutationFn: deleteImage,
     onSuccess: () => {
       console.log('Image deleted successfully')
+      inputRef.current!.value = ''
     },
     onError: (error) => {
       console.error('Error deleting image:', error)
@@ -143,7 +145,7 @@ export default function CharacterFinalization() {
     <div>
       <h1>Upload a File</h1>
       <form onSubmit={handleSubmit}>
-        <input type="file" onChange={handleFileChange} accept="image/*" />
+        <input type="file" onChange={handleFileChange} ref={inputRef} accept="image/*" />
         {preview && (
           <img
             src={preview}
