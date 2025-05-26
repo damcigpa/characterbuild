@@ -3,6 +3,7 @@
 import React from "react";
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { signOut } from 'next-auth/react'
 
 const Menu = () => {
     const { data: session, status } = useSession()
@@ -31,6 +32,12 @@ const Menu = () => {
               <Link href={`/profile/${userId}`} className="hover:text-gray-400">
                 Profile
               </Link>
+              <button
+                onClick={() => signOut({ callbackUrl: '/' })}
+                className="px-4 py-2 bg-red-500 text-white rounded"
+              >
+                Logout
+              </button>
             </li>
           ) : (
             <li>

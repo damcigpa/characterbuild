@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import validator from 'validator'
 
 const prisma = new PrismaClient()
 
@@ -23,7 +24,9 @@ export async function POST(req: Request) {
       )
     }
 
-    const { email, pass, name } = result.data
+    const { email, pass } = result.data
+    let { name } = result.data
+    name = validator.escape(validator.trim(name))
 
     if (!email || !pass) {
       return NextResponse.json(
