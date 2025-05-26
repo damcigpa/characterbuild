@@ -10,6 +10,7 @@ export default async function CharacterListPage() {
     return <h1>Go log in!</h1>
   }
 
+
   const data = await fetchData(
     `http://localhost:5474/api/characters/get?userId=${session.user.id}`
   )
